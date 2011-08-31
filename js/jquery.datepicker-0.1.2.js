@@ -1,4 +1,18 @@
-﻿(function($){
+﻿/* Date Picker v0.1.2
+ * http://alexfadeev.com/datepicker/
+ *
+ * Licensed under the WTFPL licenses.
+ * http://alexfadeev.com/datepicker/license/ & LICENSE.txt
+ *
+ * 2011, Alex Fadeev
+ * Date: Thu Sep 01 14:16:56 2011 -0400
+ * 
+ * Requires: jQuery, jQuery UI
+ */
+
+
+
+(function($){
 	$.fn.datePicker = function(options) {
 		
 		//var element = $(this);
@@ -10,9 +24,9 @@
 			dayNames: ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'],
 			dayNamesShort: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
 			dayLocale: 1,
-			loadMonthBuffer: 6,
-			loadMonthsListBuffer: 12,
-			loadYearListBuffer: 10,
+			loadDateBuffer: 6,
+			loadMonthBuffer: 12,
+			loadYearBuffer: 10,
 			daysInWeeks: 7,
 			nameGeneralClass: 'datePickerContent',
 			heightPicker: 400,
@@ -60,9 +74,9 @@
 			$(this).focusin(function(){
 				if(!($(nameGeneralClass).hasClass('included'))) {
 					$(nameGeneralClass).addClass('included visible');
-					//buildDatePicker(year, month, day);
+					buildDatePicker(year, month, day);
 					//activateDatePicker();
-					getMonthData([year, month]);
+					//getMonthData([year, month]);
 					//$.when(activateDatePicker()).then(centeringRolls());
 				}
 				if(!($(nameGeneralClass).hasClass('visible'))){
@@ -85,7 +99,7 @@
 		function getMonthData (innerCalculateDate) {
 			// === Variables === //
 			var monthData = [];
-			var count = options.loadMonthBuffer * 2 + 1;
+			var count = options.loadDateBuffer * 2 + 1;
 			// === Variables === //
 			
 
@@ -124,13 +138,9 @@
 				return points = [startPoint, middlePoint, endPoint];
 			}
 			
-			//var preMonth = innerCalculateDate[1] - options.loadMonthBuffer;
-			//var postMonth = innerCalculateDate[1] + options.loadMonthBuffer;
-			
-			
 			for (indexNumber = 0; indexNumber < count; indexNumber++) {
 				
-				var calcMonth = innerCalculateDate[1] + (indexNumber - options.loadMonthBuffer);
+				var calcMonth = innerCalculateDate[1] + (indexNumber - options.loadDateBuffer);
 				var date = dateCorrection([innerCalculateDate[0], calcMonth]); // Коррекция месяца и года
 				var monthTable = getMonthTable(date[0], date[1]); // получение таблицы месяца и сопровоздающих значений
 				var points = getPoints(date, indexNumber, monthTable[2]); // Рассчет точек координации
@@ -144,34 +154,88 @@
 		
 		
 		
-		// Генерация списка месяцев
-		/*function getDateRoll (year, month) {
+		// Генерация списка датовых табличек
+		function getDateRoll (year, month) {
 			$('.'+ options.nameGeneralClass).append('<div class="dateRoll roll"><ul class="rollWall"></ul></div>');
-			$(dateRollBlock).html(getNearbyMonths(year, month));
-		}*/
+			for (i = 0; i < (options.loadDateBuffer * 2 + 1); i++) {
+				$(dateRollBlock).append(dataSet[i][7]);
+			}
+			zeroPositioning([year, month], 'date');
+		}
 		
-		// Генерация текущего месяца, а также предыдущих и последующих в заданном диапазоне
-		/*function getNearbyMonths(year, month) {
-			var preMonth = month - options.loadMonthBuffer;
-			var postMonth = month + options.loadMonthBuffer;
+		// Генерация списка месяцев
+		function getMonthRoll (year, month) {
+			$('.'+ options.nameGeneralClass).append('<div class="monthRoll roll"><ul class="rollWall"></ul></div>');
+			$('.monthRoll ul.rollWall').html(getMonthList(year, month));
 			
-			var monthWall = '';
+			zeroPositioning([year, month], 'month');
+		}
+		
+		// Генерация списка годов
+		function getYearRoll (year) {
+			$('.'+ options.nameGeneralClass).append('<div class="yearRoll roll"><ul class="rollWall"></ul></div>');
+			$('.yearRoll ul.rollWall').html(getYearList(year));
 			
-			for(m = preMonth; m <= postMonth; m++){
-				if(m >= 12) {
-					insertMonth = m - 12;
+			zeroPositioning([year, month], 'year');
+		}
+		
+		
+		
+		
+		
+		// Генерация списка месяцев
+		function getMonthList (year, month) {
+			var generatedMonthList = '';
+			var preMonths = month - options.loadMonthBuffer;
+			var postMonths = month + options.loadMonthBuffer;
+			
+			for(i = preMonths; i <= postMonths; i++){
+				if(i > 11) {
+					insertMonth = i - 12;
 					insertYear = year + 1;
-				} else if(m < 0) {
-					insertMonth = m + 12;
+				} else if(i < 0) {
+					insertMonth = i + 12;
 					insertYear = year - 1;
 				} else {
-					insertMonth = m;
+					insertMonth = i;
 					insertYear = year;
 				}
-				monthWall += getMonthTable(insertYear, insertMonth);
+				
+				//Выявляем текущий месяц
+				var today = new Date();
+				var currentMonth = isCurrent(insertYear, insertMonth, today.getDate());
+				
+				var activeMonth = '';
+				if(insertMonth == today.getMonth() && insertYear == today.getFullYear()) {
+					activeMonth = 'active';
+				}
+				
+				generatedMonthList += '<li class="monthItem '+ currentMonth +' '+ activeMonth +' '+ insertMonth +'-'+ insertYear +'">'+options.monthNames[insertMonth]+'</li>';
 			}
-			return monthWall;
-		}*/
+			return generatedMonthList;
+		}
+		
+		// Генерация списка годов
+		function getYearList(year) {
+			var generatedYearList = '';
+			var preYears = year - options.loadYearBuffer;
+			var postYears = year + options.loadYearBuffer;
+			var today = new Date();
+			
+			
+			for(i = preYears; i <= postYears; i++){
+				var currentYear = isCurrent(i, today.getMonth(), today.getDate());
+				
+				var activeYear = '';
+				if(i == today.getFullYear()) {
+					activeYear = 'active';
+				}
+				
+				generatedYearList += '<li class="yearItem '+ activeYear +' '+ i +'">'+ i +'</li>';
+			}
+			return generatedYearList;
+		}
+		
 		
 		//Генерация блока одного месяца
 		function getMonthTable (year, month, index) {
@@ -191,6 +255,17 @@
 					generatedMonthTable += '<li class="empty"></li>';
 					//Счетчик ячеек
 					count++;
+				}
+			}
+			
+			// Проверка на выходной день
+			function isWeekend(year, month, day) {
+				calculatedDate = new Date(year, month, day);
+				day = calculatedDate.getDay();
+				if(day-1 > 4 || day == 0){ 
+					return 'weekend';
+				} else {
+					return '';
 				}
 			}
 			
@@ -254,11 +329,6 @@
 		function isCurrent(year, month, day) {
 			var result = '';
 			var eachResult = [false, false, false];
-			var today = new Date();
-				today.setHours(0);
-				today.setMinutes(0);
-				today.setSeconds(0);
-				today.setMilliseconds(0);
 			var todayDate = [today.getFullYear(), today.getMonth(), today.getDate()];
 			var calcDate = [year, month, day];
 			
@@ -273,88 +343,37 @@
 				result = 'current';
 			}
 			return result;
-		}		
+		}
 		
-		// Проверка на выходной день
-		function isWeekend(year, month, day) {
-			calculatedDate = new Date(year, month, day);
-			day = calculatedDate.getDay();
-			if(day-1 > 4 || day == 0){ 
-				return 'weekend';
-			} else {
-				return '';
+		
+		
+		
+		// Позиционирование колонок
+		function zeroPositioning(currentData, type) {
+			var positionPoint = 0;
+			var indexMonth = options.loadDateBuffer;
+			
+			if(type == 'date') {
+				positionPoint = dataSet[indexMonth][5] - (options.heightPicker / 2);
+				$(dateRollBlock).css('top', -positionPoint + 'px');
+				//alert(positionPoint);
+			} else if (type == 'month') {
+				positionPoint = (options.loadMonthBuffer * options.heightMonthCell + (options.heightMonthCell / 2)) - (options.heightPicker / 2);
+				$(monthRollBlock).css('top', -positionPoint + 'px');
+			} else if(type == 'year') {
+				positionPoint = (options.loadYearBuffer * options.heightYearCell + (options.heightYearCell / 12) * currentData[1]) - (options.heightPicker / 2);
+				$(yearRollBlock).css('top', -positionPoint + 'px');
 			}
 		}
 		
 		
 		
 		
-		// Генерация списка месяцев
-		function getMonthList (year, month) {
-			var generatedMonthList = '';
-			var preMonths = month - options.loadMonthsListBuffer;
-			var postMonths = month + options.loadMonthsListBuffer;
-			
-			for(i = preMonths; i <= postMonths; i++){
-				if(i > 11) {
-					insertMonth = i - 12;
-					insertYear = year + 1;
-				} else if(i < 0) {
-					insertMonth = i + 12;
-					insertYear = year - 1;
-				} else {
-					insertMonth = i;
-					insertYear = year;
-				}
-				
-				//Выявляем текущий месяц
-				var today = new Date();
-				var currentMonth = isCurrent(insertYear, insertMonth, today.getDate());
-				
-				var activeMonth = '';
-				if(insertMonth == today.getMonth()) {
-					activeMonth = 'active';
-				}
-				
-				generatedMonthList += '<li class="monthItem '+ currentMonth +' '+ activeMonth +' '+ insertMonth +'-'+ insertYear +'">'+options.monthNames[insertMonth]+'</li>';
-			}
-			return generatedMonthList;
-		}
-		
-		function getMonthRoll (year, month) {
-			$('.'+ options.nameGeneralClass).append('<div class="monthRoll roll"><ul class="rollWall"></ul></div>');
-			$('.monthRoll ul.rollWall').html(getMonthList(year, month));
-		}
 		
 		
 		
-		// Генерация списка годов
-		function getYearList(year) {
-			var generatedYearList = '';
-			var preYears = year - options.loadYearListBuffer;
-			var postYears = year + options.loadYearListBuffer;
-			var today = new Date();
-			
-			
-			for(i = preYears; i <= postYears; i++){
-				var currentYear = isCurrent(i, today.getMonth(), today.getDate());
-				
-				var activeYear = '';
-				if(i == today.getFullYear()) {
-					activeYear = 'active';
-				}
-				
-				generatedYearList += '<li class="yearItem '+ activeYear +' '+ i +'">'+ i +'</li>';
-			}
-			return generatedYearList;
-		}
 		
-		function getYearRoll (year) {
-			$('.'+ options.nameGeneralClass).append('<div class="yearRoll roll"><ul class="rollWall"></ul></div>');
-			$('.yearRoll ul.rollWall').html(getYearList(year));
-			
-			//centeringRolls();
-		}
+		
 		
 		
 		///////////////////////////////////////////////////////////////////////////////////////
@@ -495,9 +514,9 @@
 				rollType = dataMassive[1],
 				moveDelta = dataMassive[2],
 				
-				dateItemCount = options.loadMonthBuffer * 2 + 1,
-				monthItemCount = options.loadMonthsListBuffer * 2 + 1,
-				yearItemCount = options.loadYearListBuffer * 2 + 1,
+				dateItemCount = options.loadDateBuffer * 2 + 1,
+				monthItemCount = options.loadMonthBuffer * 2 + 1,
+				yearItemCount = options.loadYearBuffer * 2 + 1,
 				
 				dateTopIndent = (dateHeightSize - options.heightPicker)/2,
 				monthTopIndent = (monthHeightSize - options.heightPicker)/2,
@@ -553,7 +572,7 @@
 				var dateShiftCoordinate = delta + dateBlockSize/2
 				
 				
-				for(i = 0; i < (options.loadMonthBuffer); i++) {
+				for(i = 0; i < (options.loadDateBuffer); i++) {
 					startPoint = endPoint; // Координата начальной точки текущего месяца
 					endPoint +=  dateData[i+1][2]; // Координата конечной точки текущего месяца
 					//zeroPoint += dateData[i][2];
@@ -591,11 +610,11 @@
 		
 		/*function castling(index, type, way, zeroPoint) {
 			var tempDateData = [];
-			var count = options.loadMonthBuffer * 2 + 1;
+			var count = options.loadDateBuffer * 2 + 1;
 			
 			if(way) {
 				var firstMonth = [dateData[0][0], (dateData[0][1] + 1)];
-				var lastMonth = [dateData[(options.loadMonthBuffer * 2)][0], dateData[(options.loadMonthBuffer * 2)][1] + 1];
+				var lastMonth = [dateData[(options.loadDateBuffer * 2)][0], dateData[(options.loadDateBuffer * 2)][1] + 1];
 				var y = zeroPoint  - (options.heightPicker/2);// - dateData[0][2];
 				
 				$(dateRollBlock).find('li.' + (dateData[0][1]+1) + '-' + dateData[0][0]).empty().remove();
@@ -603,8 +622,8 @@
 				$(dateRollBlock).append(getMonthTable(lastMonth[0], lastMonth[1]));
 				$(dateRollBlock + ' > li.' + (index+1) + '-' + dateData[index+1][0]).addClass('current');
 			} else {
-				var firstMonth = index - options.loadMonthBuffer - 2;
-				var lastMonth = firstMonth + (options.loadMonthBuffer * 2 + 1);
+				var firstMonth = index - options.loadDateBuffer - 2;
+				var lastMonth = firstMonth + (options.loadDateBuffer * 2 + 1);
 			}
 			
 			//for(i = 0; i < count; i++){
@@ -621,7 +640,7 @@
 			yearHeightSize = $(yearRollBlock).height();
 			
 			
-			for(i = 0; i < (options.loadMonthBuffer - 1); i++) {
+			for(i = 0; i < (options.loadDateBuffer - 1); i++) {
 				dateSummaryPrevHeight += dateData[i][2];
 			}
 			dateSummaryPrevHeight += (dateData[month][2] / 2) + 5;
@@ -638,17 +657,12 @@
 		
 		// Вызов генерирующих функций и навешивание функционала
 		function buildDatePicker(year, month) {
-			// === Variables === //
-			
-			// === Variables === //
-
 			dataSet = getMonthData([year, month]);
-
-		
+	
 			// Генерируем месяцы
-			//getDateRoll(year, month);
-			//getMonthRoll(year, month);
-			//getYearRoll(year, month);
+			getDateRoll(year, month);
+			getMonthRoll(year, month);
+			getYearRoll(year, month);
 			
 			// Присабачиваем ползанье
 			//firstInstallation();
