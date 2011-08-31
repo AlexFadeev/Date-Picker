@@ -1,0 +1,211 @@
+body {
+	background: none repeat scroll 0 0 #EEEEEE;
+    font-family: Arial;
+	margin: 5px;
+}
+
+li h6{
+	height: 25px;
+    line-height: 25px;
+    margin: 0 0 0 3px;
+}
+
+.datePickerContent.visible{
+	display: block;
+}
+
+.dateInput {
+	font-size: 20px;
+    height: 20px;
+    padding: 5px;
+}
+
+.redLine {
+	border-bottom: 1px solid red;
+    height: 0;
+    margin: 200px 0;
+    position: absolute;
+    width: 400px;
+    z-index: 1000;
+}
+
+.datePickerContent{
+	height: 400px;
+    width: 400px;
+	display: none;
+	background: none repeat scroll 0 0 #DDDDDD;
+	margin: 20px 0 0;
+	position: relative;
+}
+
+.content{
+	background: none repeat scroll 0 0 #C9C9CA;
+    height: 406px;
+    position: relative;
+    width: 360px;
+}
+
+.dateRoll {
+	float: left;
+    height: 400px;
+    overflow: hidden;
+}
+.dateRoll ul.rollWall{
+	background: none repeat scroll 0 0 #C9C9CA;
+	list-style: none outside none;
+    margin: 0;
+    padding: 0;
+	position: relative;
+}
+.dateRoll ul.rollWall > li{
+	background: none repeat scroll 0 0 #FFFFFF;
+	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+    margin: 0 5px 5px;
+    padding: 1px 1px 1px 2px;
+	position: relative;
+}
+
+.dateRoll ul.rollWall li.oneMonth > span{
+	position: absolute;
+	right: 9px;
+	top: 0;
+	color: #AAA;
+	font-size: 12px;
+	height: 25px;
+	line-height: 30px;
+}
+
+.dateRoll ul .month {
+    list-style: none outside none;
+    padding: 0;
+    width: 203px;
+}
+.dateRoll ul .month li{
+	border: 1px solid #D6D6D9;
+    color: #333333;
+    cursor: pointer;
+    float: left;
+    height: 28px;
+    margin: -1px 0 0 -1px;
+    position: relative;
+    text-align: center;
+    width: 28px;
+	line-height: 28px;
+}
+.dateRoll ul .month li.weekend{
+	border-color: #E7C5C5;
+    color: #A43737;
+}
+.dateRoll ul .month li.dayName{
+	border: 1px solid #FFFFFF;
+	font-size: 10px;
+    font-weight: bold;
+	color: #CBCBCB;
+}
+.dateRoll ul .month li.dayName.weekend{
+	color: #E1B4B4;
+}
+
+.dateRoll ul.rollWall > li.active {
+	background: #EEE;
+}
+
+.current{
+	font-weight: bold;
+	
+}
+.dateRoll ul .month li.empty{
+	background: none repeat scroll 0 0 #F3F3F3;
+	border: 1px solid #F3F3F3;
+}
+
+.mb4r {height: 116px;}
+.mb5r {height: 145px;}
+.mb6r {height: 174px;}
+.mb7r {height: 203px;}
+
+
+.monthRoll {
+	float: left;
+	height: 400px;
+    overflow: hidden;
+}
+.monthRoll ul.rollWall{
+	background: none repeat scroll 0 0 #C9C9CA;
+	list-style: none outside none;
+    margin: 0;
+    padding: 0 5px;
+	position: relative;
+}
+.monthRoll ul.rollWall > li.active {
+	background: #EEE;
+}
+
+.monthRoll ul li{
+	background: none repeat scroll 0 0 #FFFFFF;
+    height: 25px;
+    line-height: 25px;
+    margin: 0;
+    width: 80px;
+}
+
+.yearRoll {
+	float: left;
+	height: 400px;
+    overflow: hidden;
+}
+.yearRoll ul.rollWall{
+	background: none repeat scroll 0 0 #C9C9CA;
+	list-style: none outside none;
+    margin: 0;
+    padding: 0 5px;
+	position: relative;
+}
+
+.yearRoll ul.rollWall > li.active {
+	background: #EEE;
+}
+.yearRoll ul li{
+	background: none repeat scroll 0 0 #FFFFFF;
+    height: 25px;
+    line-height: 25px;
+    margin: 0;
+    text-align: center;
+    width: 50px;
+}
+
+.drag{
+	background: none repeat scroll 0 0 #326764;
+    float: left;
+    height: 100px;
+    width: 100px;
+}
+
+.active{}
+
+.dateBorder {
+	border: 4px solid #000000;
+    height: 270px;
+    position: absolute;
+    top: 60px;
+    width: 208px;
+    z-index: 10;
+}
+.monthBorder {
+	border: 4px solid #000000;
+    height: 50px;
+    left: 214px;
+    position: absolute;
+    top: 170px;
+    width: 86px;
+    z-index: 10;
+}
+.yearBorder {
+	border: 4px solid #000000;
+    height: 30px;
+    left: 304px;
+    position: absolute;
+    top: 180px;
+    width: 55px;
+    z-index: 10;
+}
