@@ -21,14 +21,14 @@ li h6{
 }
 
 .redLine {
-	border-bottom: 1px solid red;
-	height: 0;
-	margin: 200px 0;
+	border: 1px solid red;
+	height: 23px;
+	margin: 187.5px 0;
 	position: absolute;
 	width: 370px;
 	z-index: 1000;
 	opacity: 0.3;
-	filter: alpha(opacity=30)
+	filter: alpha(opacity=30);
 }
 
 .datePickerContent{
@@ -63,9 +63,10 @@ li h6{
 .dateRoll ul.rollWall > li{
 	background: none repeat scroll 0 0 #FFFFFF;
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
-    margin: 0 5px 5px;
-    padding: 1px 1px 1px 2px;
+	margin: 0;
+	padding: 1px 1px 1px 2px;
 	position: relative;
+	border: 2px solid #C9C9CA;
 }
 
 .dateRoll ul.rollWall li.oneMonth > span{
@@ -186,29 +187,51 @@ li h6{
 
 .active{}
 
-.dateBorder {
-	border: 4px solid #000000;
-    height: 270px;
-    position: absolute;
-    top: 60px;
-    width: 208px;
-    z-index: 10;
+.clearance {
+	height: 5000px;
+}
+	
+
+
+/*.dateBorder {
+	border: solid #888;
+	height: 270px;
+	position: absolute;
+	top: 60px;
+	width: 208px;
+	z-index: 10;
+	border-width: 3px 3px 3px 0;
 }
 .monthBorder {
-	border: 4px solid #000000;
-    height: 50px;
-    left: 214px;
-    position: absolute;
-    top: 170px;
-    width: 86px;
-    z-index: 10;
+	border: solid #888;
+	height: 50px;
+	left: 211px;
+	position: absolute;
+	top: 173px;
+	width: 87px;
+	z-index: 10;
+	border-width: 3px 3px 3px 0;
 }
 .yearBorder {
-	border: 4px solid #000000;
-    height: 30px;
-    left: 304px;
-    position: absolute;
-    top: 180px;
-    width: 55px;
-    z-index: 10;
+	border: solid #888;
+	height: 30px;
+	left: 301px;
+	position: absolute;
+	top: 183px;
+	width: 58px;
+	z-index: 10;
+	border-width: 3px 3px 3px 0;
+}*/
+
+.datePickerTempInformation {
+	position: absolute;
+	width: 400px;
+	height: 367px;
+	background: white;
+	top: 59px;
+	left: 400px;
+	padding: 20px;
+}
+.datePickerTempInformation div{
+	font-size: 13px;
 }
